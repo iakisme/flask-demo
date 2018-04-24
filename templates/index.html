@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>端面移动量的计算</title>
+  <link href="https://cdn.bootcss.com/iview/2.13.0/styles/iview.css" rel="stylesheet">
+  <link href="https://cdn.bootcss.com/iview/2.13.0/styles/fonts/ionicons.svg" rel="stylesheet">
+  <style>
+    #app {
+      margin: 30px;
+    }
+
+    .result {
+      margin-left: 170px;
+      margin-top: 30px;
+    }
+
+    .form-item {
+      margin-bottom: 20px;
+    }
+
+    .form-item span {
+      display: inline-block;
+      width: 150px;
+      margin-right: 20px;
+      text-align: right;
+    }
+
+    .form-button {
+      width: 120px;
+      margin-left: 170px;
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <h1>端面移动量的计算</h1>
+    <div class="form">
+      <div class="form-item">
+        <span>成形角 a: </span>
+        <input-number v-model="a" style="width: 100px"></input-number>
+      </div>
+      <div class="form-item">
+        <span>展宽角 b: </span>
+        <input-number v-model="b" style="width: 100px"></input-number>
+      </div>
+      <div class="form-item">
+        <span>轧件尺寸 r0: </span>
+        <input-number v-model="r0" style="width: 100px"></input-number>
+      </div>
+      <div class="form-item">
+        <span>r1: </span>
+        <input-number v-model="r1" style="width: 100px"></input-number>
+      </div>
+      <i-button @click="submit" type="primary" class="form-button">提交</i-button>
+    </div>
+
+    <i-table v-if="result[0]" :columns="columns" :data="result" class="result"></i-table>
+  </div>
+
+  <script src="https://cdn.bootcss.com/vue/2.5.17-beta.0/vue.min.js"></script>
+  <script src="https://cdn.bootcss.com/iview/2.13.0/iview.min.js"></script>
+  <script src="https://cdn.bootcss.com/axios/0.18.0/axios.min.js"></script>
+  <script>
+    new Vue({
+      el: '#app',
+      data: function() {
+        return {
+          a: null,
+          b: null,
+          r0: null,
+          r1: null,
+          result: [],
+        };
+      },
+      methods: {
+        submit: function() {
+          var self  = this;
+          axios.post('/cal-movement', {
+            a: this.a,
+            b: this.b,
+            r0: this.r0,
+            r1: this.r1,
+          })
+          .then(function(json) {
+            self.result = [json.data];
+          })
+          .catch(function(error) {
+            console.error(error);
+          });
+        },
+        isObject: function(obj) {
+          return ({}).toString.call(obj) === '[object Object]';
+        },
+      },
+      computed: {
+        columns: function() {
+          return this.isObject(this.result[0])
+            ? Object.keys(this.result[0]).map(function(e) {
+              return { title: e, key: e };
+            })
+            : [];
+        },
+      },
+    });
+  </script>
+</body>
+</html>

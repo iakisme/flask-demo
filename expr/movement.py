@@ -1,5 +1,6 @@
 from sympy import *
 
+
 def cal_movement(_a, _b, _r0, _r1):
     r0, r1, a, b = symbols("r0,r1,a,b")
     pararm = {a: (pi * _a) / 180, b: (pi * _b) / 180, r0: _r0, r1: _r1}
@@ -80,7 +81,8 @@ def cal_movement(_a, _b, _r0, _r1):
         y4_result = y4.evalf(subs=pararm)
 
         result_left = {
-            "ra": ra_result,
+            "判断": "否，左边逻辑",
+            "r'a": ra_result,
             "t1": t1_result,
             "y1": y1_result,
             "rb": rb_result,
@@ -108,15 +110,16 @@ def cal_movement(_a, _b, _r0, _r1):
         t4_result = t4.evalf(subs=pararm)
 
         result_right = {
-            "rc": rc_result,
+            "判断": "是，右边逻辑",
+            "r'c": rc_result,
             "e2": e2_result,
-            "y5": y5_result,
-            "t5": t5_result,
-            "t6": t6_result,
-            "y6": y6_result,
+            "y'1": y5_result,
+            "t'1": t5_result,
+            "t'2": t6_result,
+            "y'2": y6_result,
             "e3": e3_result,
-            "t7": t7_result,
-            "y7": y7_result,
+            "t'3": t7_result,
+            "y'3": y7_result,
             "e4": e4_result,
             "y4": y4_result,
             "t4": t4_result,
