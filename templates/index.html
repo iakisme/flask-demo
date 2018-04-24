@@ -11,52 +11,79 @@
       margin: 30px;
     }
 
-    .result {
-      margin-left: 170px;
-      margin-top: 30px;
+    .title {
+      text-align: center;
+      margin-bottom: 30px;
     }
 
-    .form-item {
-      margin-bottom: 20px;
+    @media (min-width: 576px) {
+      .form {
+        width: 768px;
+        margin: 0 auto;
+      }
+
+      .form .ivu-form-item-label { color: #8D98AB; }
+
+      .form .ivu-input-number-input { padding: 0 16px; }
+
+      .form .input { width: 100%; border-radius: 32px; }
+
+      .form .button {
+        width: 120px;
+        border-radius: 32px;
+      }
     }
 
-    .form-item span {
-      display: inline-block;
-      width: 150px;
-      margin-right: 20px;
-      text-align: right;
-    }
-
-    .form-button {
-      width: 120px;
-      margin-left: 170px;
+    @media (max-width: 576px) {
+      .form .input, .button { width: 100%; }
     }
   </style>
 </head>
 <body>
   <div id="app">
-    <h1>端面移动量的计算</h1>
-    <div class="form">
-      <div class="form-item">
-        <span>成形角 a: </span>
-        <input-number v-model="a" style="width: 100px"></input-number>
-      </div>
-      <div class="form-item">
-        <span>展宽角 b: </span>
-        <input-number v-model="b" style="width: 100px"></input-number>
-      </div>
-      <div class="form-item">
-        <span>轧件尺寸 r0: </span>
-        <input-number v-model="r0" style="width: 100px"></input-number>
-      </div>
-      <div class="form-item">
-        <span>r1: </span>
-        <input-number v-model="r1" style="width: 100px"></input-number>
-      </div>
-      <i-button @click="submit" type="primary" class="form-button">提交</i-button>
-    </div>
+    <h1 class="title">端面移动量的计算</h1>
 
-    <i-table v-if="result[0]" :columns="columns" :data="result" class="result"></i-table>
+    <i-form
+      label-position="right"
+      :label-width="40"
+      :rules="rules"
+      :model="form"
+      ref="form"
+      class="form"
+    >
+      <form-item label="成形角 a:" :label-width="80" prop="a">
+        <input-number class="input" v-model="form.a" :disabled="pending"></input-number>
+      </form-item>
+
+      <form-item label="展宽角 b:" :label-width="80" prop="b">
+        <input-number class="input" v-model="form.b" :disabled="pending"></input-number>
+      </form-item>
+
+      <form-item label="轧件尺寸 r0:" :label-width="80" prop="r0">
+        <input-number class="input" v-model="form.r0" :disabled="pending"></input-number>
+      </form-item>
+
+      <form-item label="r1:" :label-width="80" prop="r1">
+        <input-number class="input" v-model="form.r1" :disabled="pending"></input-number>
+      </form-item>
+
+      <form-item>
+        <i-button
+          :loading="pending"
+          type="primary"
+          class="button"
+          @click="submit"
+        >提交</i-button>
+      </form-item>
+    </i-form>
+
+    <i-table
+      v-if="result[0]"
+      :loading="pending"
+      :columns="columns"
+      :data="result"
+      size="small"
+      class="table"></i-table>
   </div>
 
   <script src="https://cdn.bootcss.com/vue/2.5.17-beta.0/vue.min.js"></script>
@@ -67,27 +94,53 @@
       el: '#app',
       data: function() {
         return {
-          a: null,
-          b: null,
-          r0: null,
-          r1: null,
           result: [],
+          form: {
+            a: null,
+            b: null,
+            r0: null,
+            r1: null,
+          },
+          pending: false,
+          rules: {
+            a: {
+              required: true, message: '不能为空',
+            },
+            b: {
+              required: true, message: '不能为空',
+            },
+            r0: {
+              required: true, message: '不能为空',
+            },
+            r1: {
+              required: true, message: '不能为空',
+            },
+          },
         };
       },
       methods: {
         submit: function() {
-          var self  = this;
-          axios.post('/cal-movement', {
-            a: this.a,
-            b: this.b,
-            r0: this.r0,
-            r1: this.r1,
-          })
-          .then(function(json) {
-            self.result = [json.data];
-          })
-          .catch(function(error) {
-            console.error(error);
+          var self = this;
+
+          this.$refs.form.validate(function(valid) {
+            if (valid) {
+              self.pending = true;
+
+              axios.post('/cal-movement', {
+                a: self.form.a,
+                b: self.form.b,
+                r0: self.form.r0,
+                r1: self.form.r1,
+              })
+              .then(function(json) {
+                self.result = [json.data];
+                self.pending = false;
+              })
+              .catch(function(error) {
+                console.error(error);
+                self.pending = false;
+              });
+            }
           });
         },
         isObject: function(obj) {
@@ -98,7 +151,7 @@
         columns: function() {
           return this.isObject(this.result[0])
             ? Object.keys(this.result[0]).map(function(e) {
-              return { title: e, key: e };
+              return { title: e, key: e, minWidth: 100 };
             })
             : [];
         },
