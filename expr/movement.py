@@ -82,19 +82,19 @@ def cal_movement(_a, _b, _r0, _r1):
 
         result_left = {
             "判断": "否，左边逻辑",
-            "r'a": ra_result,
-            "t1": t1_result,
-            "y1": y1_result,
-            "rb": rb_result,
-            "t2": t2_result,
-            "y2": y2_result,
-            "e1": e1_result,
-            "t3": t3_result,
-            "y3": y3_result,
-            "y4": y4_result,
-            "t4": t4_result,
+            "r'a": round(ra_result, 5),
+            "t1": round(t1_result, 5),
+            "y1": round(y1_result, 5),
+            "rb": round(rb_result, 5),
+            "t2": round(t2_result, 5),
+            "y2": round(y2_result, 5),
+            "e1": round(e1_result, 5),
+            "t3": round(t3_result, 5),
+            "y3": round(y3_result, 5),
+            "y4": round(y4_result, 5),
+            "t4": round(t4_result, 5),
         }
-        return {k: round(v, 5) for k, v in result_left.items()}
+        return result_left
     else:
         rc_result = rc.evalf(subs=pararm)
         e2_result = e2.evalf(subs=pararm)
@@ -111,17 +111,17 @@ def cal_movement(_a, _b, _r0, _r1):
 
         result_right = {
             "判断": "是，右边逻辑",
-            "r'c": rc_result,
-            "e2": e2_result,
-            "y'1": y5_result,
-            "t'1": t5_result,
-            "t'2": t6_result,
-            "y'2": y6_result,
-            "e3": e3_result,
-            "t'3": t7_result,
-            "y'3": y7_result,
-            "e4": e4_result,
-            "y4": y4_result,
-            "t4": t4_result,
+            "r'c": round(rc_result, 5),
+            "e2": round(e2_result, 5),
+            "y'1": round(y5_result, 5),
+            "t'1": round(t5_result, 5),
+            "t'2": round(t6_result, 5),
+            "y'2": round(y6_result, 5),
+            "e3": round(e3_result, 5),
+            "t'3": round(t7_result, 5),
+            "y'3": round(y7_result, 5),
+            "e4": round(e4_result, 5),
+            "y4": round(y4_result, 5),
+            "t4": round(t4_result, 5),
         }
-        return {k: round(v, 5) for k, v in result_right.items()}
+        return result_right
