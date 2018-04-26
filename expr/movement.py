@@ -1,6 +1,5 @@
 from sympy import *
 
-
 def cal_movement(_a, _b, _r0, _r1):
     r0, r1, a, b = symbols("r0,r1,a,b")
     pararm = {a: (pi * _a) / 180, b: (pi * _b) / 180, r0: _r0, r1: _r1}
@@ -125,3 +124,14 @@ def cal_movement(_a, _b, _r0, _r1):
             "t4": round(t4_result, 5),
         }
         return result_right
+
+
+if __name__ == '__main__':
+    a = input("请输入 a：")
+    b = input("请输入 b：")
+    r0 = input("请输入 r0：")
+    r1 = input("请输入 r1：")
+
+    res = cal_movement(float(a), float(b), float(r0), float(r1))
+    for k, v in res.items():
+        print(k + " : " + str(v))
